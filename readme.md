@@ -4,7 +4,7 @@ To create the files in this git repo we've already run `mvn archetype:generate` 
     
     mvn archetype:generate -DgroupId=com.myapp.app -DartifactId=myapp -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
 
-Now, to print "Hello World!", type either...
+Now, to print "Hello World Aviran!", type either...
 
     cd myapp
     mvn compile
@@ -34,7 +34,7 @@ Running `mvn compile` produces a class file:
     target/classes/com/myapp/app/App.class
     murphy:myapp pdurbin$ 
     murphy:myapp pdurbin$ java -cp target/classes com.myapp.app.App
-    Hello World!
+    Hello World Aviran!
 
 Running `mvn package` does a compile and creates the target directory, including a jar:
 
