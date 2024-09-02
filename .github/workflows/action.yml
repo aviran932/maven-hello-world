@@ -77,11 +77,3 @@ jobs:
           echo "Running Docker image..."
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/maven-hello-world:${{ env.VERSION }}
           docker run -d -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/maven-hello-world:${{ env.VERSION }}
-
-      - name: Set up Helm
-        uses: azure/setup-helm@v1
-
-      - name: Helm Dry Run
-        run: |
-          echo "Performing a Helm dry run..."
-          helm upgrade --install myapp ./helm-chart --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/maven-hello-world --set image.tag=${{ env.VERSION }} --dry-run --debug
