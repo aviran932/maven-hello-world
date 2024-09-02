@@ -30,7 +30,6 @@ jobs:
           sed -i "s/<version>$CURRENT_VERSION-SNAPSHOT<\/version>/<version>$NEW_VERSION-SNAPSHOT<\/version>/" myapp/pom.xml
           echo "New version: $NEW_VERSION"
           echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
-        
 
       - name: Compile the code
         run: mvn -f myapp/pom.xml clean compile
@@ -44,17 +43,20 @@ jobs:
           name: myapp-jar
           path: myapp/target/*.jar
 
-      - name: Build Docker image
+      - name: Build Docker image with non-root user
         run: |
-          echo "Building Docker image..."
-          docker build -t myapp:${{ env.VERSION }} .
-
-      - name: Ensure non-root user in Dockerfile and build
-        run: |
-          echo "FROM amazoncorretto:17-alpine" > Dockerfile
+          echo "Building Docker image with non-root user..."
+          echo "FROM maven:3.9.9-amazoncorretto-17-al2023 AS build" > Dockerfile
+          echo "WORKDIR /app" >> Dockerfile
+          echo "COPY myapp/pom.xml ./" >> Dockerfile
+          echo "RUN mvn dependency:go-offline -B" >> Dockerfile
+          echo "COPY myapp/src ./src" >> Dockerfile
+          echo "RUN mvn clean package -DskipTests" >> Dockerfile
+          echo "FROM amazoncorretto:17-alpine" >> Dockerfile
+          echo "WORKDIR /app" >> Dockerfile
           echo "RUN addgroup -S mygroup && adduser -S myuser -G mygroup" >> Dockerfile
           echo "USER myuser" >> Dockerfile
-          echo "COPY --from=build /app/target/*.jar /app/app.jar" >> Dockerfile
+          echo "COPY --from=build /app/target/myapp-${{ env.VERSION }}-SNAPSHOT.jar /app/app.jar" >> Dockerfile
           echo "CMD [\"java\", \"-jar\", \"/app/app.jar\"]" >> Dockerfile
           docker build -t myapp:${{ env.VERSION }} .
 
