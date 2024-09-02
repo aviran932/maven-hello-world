@@ -23,13 +23,15 @@ jobs:
         id: increase_version
         run: |
           echo "Updating patch version..."
-          CURRENT_VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+(?=-SNAPSHOT</version>)' myapp/pom.xml)
+          CURRENT_VERSION=$(sed -n 's/.*<version>\([0-9]*\.[0-9]*\.[0-9]*\)-SNAPSHOT<\/version>.*/\1/p' myapp/pom.xml)
+          echo "Current version in pom.xml: $CURRENT_VERSION"
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
           NEW_PATCH=$((PATCH + 1))
           NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+          echo "New version to be updated in pom.xml: $NEW_VERSION"
           sed -i "s/<version>$CURRENT_VERSION-SNAPSHOT<\/version>/<version>$NEW_VERSION-SNAPSHOT<\/version>/" myapp/pom.xml
-          echo "New version: $NEW_VERSION"
           echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          cat myapp/pom.xml
 
       - name: Compile the code
         run: mvn -f myapp/pom.xml clean compile
