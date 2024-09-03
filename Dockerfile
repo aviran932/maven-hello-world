@@ -20,6 +20,6 @@ RUN addgroup --gid 1001 -S myappgroup && \
 
 USER myappuser
 
-COPY --from=build /app/target/myapp-${VERSION}-SNAPSHOT.jar /app/app.jar
+COPY --from=build /app/target/*.jar /app/app.jar
 
 CMD ["java", "-jar", "/app/app.jar"]
