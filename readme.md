@@ -30,12 +30,12 @@ JAR File:
 The JAR file is generated with a name that includes the current version.
 Running Locally:
 You can pull and build and run the Docker image locally using the following command:
-docker pull 623715/maven-hello-world:1.0.6 (current version )
+docker pull 623715/maven-hello-world:1.0.7 (current version )
 docker build --build-arg VERSION=<the version number> -t myapp:<the version number> .
 docker run -d -p 8080:8080 myapp:<the version number>
 7.helm deploy :
  helm create helm-chart
- helm upgrade --install myapp ./helm-chart --set image.repository=623715/maven-hello-world --set image.tag=<version number>
+helm upgrade --install myapp ./helm-chart --set image.repository=623715/maven-hello-world --set image.tag=<version number>
 ### A simple, minimal Maven example: hello world
 
 To create the files in this git repo we've already run `mvn archetype:generate` from http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
