@@ -53,20 +53,7 @@ jobs:
 
       - name: Build Docker image with non-root user
         run: |
-          echo "Building Docker image with non-root user..."
-          echo "FROM maven:3.9.9-amazoncorretto-17-al2023 AS build" > Dockerfile
-          echo "WORKDIR /app" >> Dockerfile
-          echo "COPY myapp/pom.xml ./" >> Dockerfile
-          echo "RUN mvn dependency:go-offline -B" >> Dockerfile
-          echo "COPY myapp/src ./src" >> Dockerfile
-          echo "RUN mvn clean package -DskipTests" >> Dockerfile
-          echo "FROM amazoncorretto:17-alpine" >> Dockerfile
-          echo "WORKDIR /app" >> Dockerfile
-          echo "RUN addgroup -S mygroup && adduser -S myuser -G mygroup" >> Dockerfile
-          echo "USER myuser" >> Dockerfile
-          echo "COPY --from=build /app/target/myapp-${{ env.VERSION }}-SNAPSHOT.jar /app/app.jar" >> Dockerfile
-          echo "CMD [\"java\", \"-jar\", \"/app/app.jar\"]" >> Dockerfile
-          docker build -t myapp:${{ env.VERSION }} .
+          docker build --build-arg VERSION=${{ env.VERSION }} -t myapp:${{ env.VERSION }} .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
