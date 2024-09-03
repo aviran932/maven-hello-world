@@ -1,3 +1,41 @@
+CI/CD Pipeline and Docker Integration
+This project includes a CI/CD pipeline set up using GitHub Actions that automates the process of building, packaging, and deploying hello-world Maven-based Java application.
+
+Key Features of the Pipeline:
+1.Versioning:
+
+Automatically increments the patch version in the pom.xml file on every push to the master branch.
+The updated version is committed back to the repository, ensuring that the version number stays in sync with each build.
+2.Docker Image Build:
+
+Builds a Docker image using a multi-stage Dockerfile.
+The Docker image is built with a non-root user for security purposes.
+The VERSION argument is passed to the Docker build process, ensuring the correct JAR file is used in the final image.
+3.Artifact Upload:
+
+After packaging, the JAR file is uploaded as an artifact for easy retrieval and testing.
+you can download it from github action and test it by running : 
+java -jar myapp-<the version number>-SNAPSHOT.jar
+4. Docker Hub Deployment:
+
+5. The Docker image is tagged with the new version and pushed to Docker Hub.
+6. Running the Docker Image:
+
+The CI pipeline pulls the Docker image and runs it to ensure everything works as expected.
+Dockerfile Overview:
+Multi-stage Build:
+The first stage uses Maven base image to compile and package the application.
+The second stage creates a minimal Docker image with Amazon Corretto, ensuring the application runs with a non-root user.
+JAR File:
+The JAR file is generated with a name that includes the current version.
+Running Locally:
+You can pull and build and run the Docker image locally using the following command:
+docker pull 623715/maven-hello-world:1.0.6 (current version )
+docker build --build-arg VERSION=<the version number> -t myapp:<the version number> .
+docker run -d -p 8080:8080 myapp:<the version number>
+7.helm deploy :
+ helm create helm-chart
+ helm upgrade --install myapp ./helm-chart --set image.repository=623715/maven-hello-world --set image.tag=<version number>
 ### A simple, minimal Maven example: hello world
 
 To create the files in this git repo we've already run `mvn archetype:generate` from http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
